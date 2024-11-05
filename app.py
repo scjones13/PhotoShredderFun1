@@ -17,5 +17,17 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+@app.route('/embed')
+def embed():
+    """Render the embedded version of the shredder"""
+    return render_template('embed.html')
+
+@app.route('/get-embed-code')
+def get_embed_code():
+    """Generate embed code for the shredder"""
+    host = request.host_url.rstrip('/')
+    embed_code = f'<iframe src="{host}/embed" width="800" height="600" frameborder="0" style="max-width: 100%;"></iframe>'
+    return jsonify({'embed_code': embed_code})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

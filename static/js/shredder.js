@@ -6,11 +6,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewContainer = document.querySelector('.preview-container');
     const shredButton = document.getElementById('shredButton');
     const resetButton = document.getElementById('resetButton');
+    const shareButton = document.getElementById('shareButton');
+    const modal = document.getElementById('embedModal');
+    const closeBtn = document.querySelector('.close');
+    const embedCodeTextarea = document.getElementById('embedCode');
+    const copyButton = document.getElementById('copyButton');
     
     const previewCtx = previewCanvas.getContext('2d');
     const shreddingCtx = shreddingCanvas.getContext('2d');
     
     let currentImage = null;
+
+    // Share button and modal functionality
+    if (shareButton) {
+        shareButton.addEventListener('click', async () => {
+            const response = await fetch('/get-embed-code');
+            const data = await response.json();
+            embedCodeTextarea.value = data.embed_code;
+            modal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        copyButton.addEventListener('click', () => {
+            embedCodeTextarea.select();
+            document.execCommand('copy');
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+                copyButton.textContent = 'Copy Code';
+            }, 2000);
+        });
+    }
 
     // Handle drag and drop events
     dropZone.addEventListener('dragover', (e) => {

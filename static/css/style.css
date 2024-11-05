@@ -102,9 +102,10 @@ h1 {
     display: flex;
     gap: 1rem;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
-.shred-button, .reset-button {
+.shred-button, .reset-button, .share-button {
     padding: 0.8rem 1.5rem;
     border: none;
     border-radius: 25px;
@@ -132,9 +133,79 @@ h1 {
     background-color: #7f8c8d;
 }
 
+.share-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.share-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
 .drag-over {
     background-color: #ebf5fb;
     border-color: #3498db;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #95a5a6;
+}
+
+.close:hover {
+    color: #7f8c8d;
+}
+
+#embedCode {
+    width: 100%;
+    height: 100px;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    font-family: monospace;
+    resize: none;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+}
+
+.copy-button {
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.copy-button:hover {
+    background-color: #27ae60;
 }
 
 @keyframes pull-into-shredder {

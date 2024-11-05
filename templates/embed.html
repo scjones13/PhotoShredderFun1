@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Photo Shredder</title>
+    <title>Virtual Photo Shredder - Embedded</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: auto;
+        }
+        .container {
+            margin: 1rem auto;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>🗑️ Virtual Photo Shredder 🗑️</h1>
-        
         <div class="upload-container" id="dropZone">
             <div class="upload-area">
                 <img src="{{ url_for('static', filename='images/shredder.svg') }}" alt="Shredder" class="shredder-icon">
@@ -31,22 +43,9 @@
             <div class="button-container">
                 <button id="shredButton" class="shred-button">SHRED IT! 🔪</button>
                 <button id="resetButton" class="reset-button">Upload New Image</button>
-                <button id="shareButton" class="share-button">Share 🔗</button>
             </div>
         </div>
     </div>
-
-    <!-- Embed Code Modal -->
-    <div id="embedModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Share This Shredder</h2>
-            <p>Copy the code below to embed this shredder on your website:</p>
-            <textarea id="embedCode" readonly></textarea>
-            <button id="copyButton" class="copy-button">Copy Code</button>
-        </div>
-    </div>
-
     <script src="{{ url_for('static', filename='js/shredder.js') }}"></script>
 </body>
 </html>
