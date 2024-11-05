@@ -20,18 +20,11 @@ body {
     text-align: center;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
 h1 {
     color: #2c3e50;
     font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .upload-container {
@@ -132,6 +125,10 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    margin-top: 2rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .share-button:hover {
@@ -233,11 +230,6 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    .header {
-        flex-direction: column;
-        text-align: center;
-    }
-
     h1 {
         font-size: 2rem;
     }
