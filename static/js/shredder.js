@@ -17,34 +17,35 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentImage = null;
 
+    // Show share button initially (it will be hidden by default in HTML)
+    shareButton.hidden = true;
+
     // Share button and modal functionality
-    if (shareButton) {
-        shareButton.addEventListener('click', async () => {
-            const response = await fetch('/get-embed-code');
-            const data = await response.json();
-            embedCodeTextarea.value = data.embed_code;
-            modal.style.display = 'block';
-        });
+    shareButton.addEventListener('click', async () => {
+        const response = await fetch('/get-embed-code');
+        const data = await response.json();
+        embedCodeTextarea.value = data.embed_code;
+        modal.style.display = 'block';
+    });
 
-        closeBtn.addEventListener('click', () => {
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
             modal.style.display = 'none';
-        });
+        }
+    });
 
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-        copyButton.addEventListener('click', () => {
-            embedCodeTextarea.select();
-            document.execCommand('copy');
-            copyButton.textContent = 'Copied!';
-            setTimeout(() => {
-                copyButton.textContent = 'Copy Code';
-            }, 2000);
-        });
-    }
+    copyButton.addEventListener('click', () => {
+        embedCodeTextarea.select();
+        document.execCommand('copy');
+        copyButton.textContent = 'Copied!';
+        setTimeout(() => {
+            copyButton.textContent = 'Copy Code';
+        }, 2000);
+    });
 
     // Handle drag and drop events
     dropZone.addEventListener('dragover', (e) => {
@@ -91,13 +92,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 shreddingCanvas.width = previewCanvas.width;
                 shreddingCanvas.height = previewCanvas.height;
                 
-                // Center the image on the canvas
+                // Center the image on both canvases
                 const x = (previewCanvas.width - (img.width * scale)) / 2;
                 const y = (previewCanvas.height - (img.height * scale)) / 2;
+                
+                previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
                 previewCtx.drawImage(img, x, y, img.width * scale, img.height * scale);
                 
                 dropZone.hidden = true;
                 previewContainer.hidden = false;
+                shareButton.hidden = false; // Show share button after upload
             };
             img.src = e.target.result;
         };
@@ -151,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
             previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
             previewCtx.save();
             
-            // Center the image during pull animation
+            // Ensure image stays centered during pull animation
             const centerX = (previewCanvas.width - currentImage.width) / 2;
             previewCtx.translate(centerX, progress * (-previewCanvas.height));
             previewCtx.drawImage(currentImage, 0, 0, previewCanvas.width, previewCanvas.height);
@@ -166,7 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function startShredding() {
             const stripImages = [];
-            const centerX = (shreddingCanvas.width - currentImage.width) / 2;
+            // Calculate center offset for strips
+            const canvasCenterX = shreddingCanvas.width / 2;
+            const totalStripsWidth = strips * stripWidth;
+            const startX = canvasCenterX - (totalStripsWidth / 2);
             
             for (let i = 0; i < strips; i++) {
                 const stripCanvas = document.createElement('canvas');
@@ -174,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 stripCanvas.height = previewCanvas.height;
                 const stripCtx = stripCanvas.getContext('2d');
                 
-                // Calculate strip position relative to center
                 const sourceX = (i * currentImage.width) / strips;
                 stripCtx.drawImage(
                     currentImage,
@@ -184,8 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 stripImages.push({
                     canvas: stripCanvas,
-                    x: centerX + i * stripWidth,
-                    y: -previewCanvas.height, // Start from above the shredder
+                    x: startX + (i * stripWidth),
+                    y: -previewCanvas.height,
                     speed: 2 + Math.random() * 3,
                     rotation: (Math.random() - 0.5) * 0.2,
                     rotationSpeed: (Math.random() - 0.5) * 0.02
@@ -235,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
     resetButton.addEventListener('click', () => {
         dropZone.hidden = false;
         previewContainer.hidden = true;
+        shareButton.hidden = true; // Hide share button on reset
         currentImage = null;
         previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         shreddingCtx.clearRect(0, 0, shreddingCanvas.width, shreddingCanvas.height);
