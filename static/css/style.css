@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    max-width: 800px;
+    width: 90%;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+.upload-container {
+    background: white;
+    border: 3px dashed #3498db;
+    border-radius: 20px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-container:hover {
+    border-color: #2980b9;
+    transform: scale(1.02);
+}
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.shredder-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.preview-container {
+    margin-top: 2rem;
+}
+
+#previewCanvas {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button-container {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.shred-button, .reset-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.shred-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.shred-button:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+.reset-button {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.reset-button:hover {
+    background-color: #7f8c8d;
+}
+
+.drag-over {
+    background-color: #ebf5fb;
+    border-color: #3498db;
+}
