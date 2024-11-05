@@ -20,9 +20,17 @@ body {
     text-align: center;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 h1 {
     color: #2c3e50;
-    margin-bottom: 2rem;
     font-size: 2.5rem;
 }
 
@@ -105,13 +113,30 @@ h1 {
     flex-wrap: wrap;
 }
 
-.shred-button, .reset-button, .share-button {
+.shred-button, .reset-button {
     padding: 0.8rem 1.5rem;
     border: none;
     border-radius: 25px;
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.share-button {
+    background-color: #3498db;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.share-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
 }
 
 .shred-button {
@@ -131,16 +156,6 @@ h1 {
 
 .reset-button:hover {
     background-color: #7f8c8d;
-}
-
-.share-button {
-    background-color: #3498db;
-    color: white;
-}
-
-.share-button:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
 }
 
 .drag-over {
@@ -214,5 +229,16 @@ h1 {
     }
     100% {
         transform: translateY(-100%);
+    }
+}
+
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2rem;
     }
 }

@@ -9,7 +9,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>🗑️ Virtual Photo Shredder 🗑️</h1>
+        <div class="header">
+            <h1>🗑️ Virtual Photo Shredder 🗑️</h1>
+            <button id="shareButton" class="share-button">Share Shredder App 🔗</button>
+        </div>
         
         <div class="upload-container" id="dropZone">
             <div class="upload-area">
@@ -31,7 +34,6 @@
             <div class="button-container">
                 <button id="shredButton" class="shred-button">SHRED IT! 🔪</button>
                 <button id="resetButton" class="reset-button">Upload New Image</button>
-                <button id="shareButton" class="share-button">Share 🔗</button>
             </div>
         </div>
     </div>
@@ -41,7 +43,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Share This Shredder</h2>
-            <p>Copy the code below to embed this shredder on your website:</p>
+            <p>Copy the code below to embed the Virtual Photo Shredder on your website:</p>
             <textarea id="embedCode" readonly></textarea>
             <button id="copyButton" class="copy-button">Copy Code</button>
         </div>
