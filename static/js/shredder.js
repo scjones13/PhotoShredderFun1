@@ -91,11 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 shreddingCanvas.width = previewCanvas.width;
                 shreddingCanvas.height = previewCanvas.height;
                 
-                // Center the image on the canvas
-                const x = (previewCanvas.width - (img.width * scale)) / 2;
-                const y = (previewCanvas.height - (img.height * scale)) / 2;
-                previewCtx.drawImage(img, x, y, img.width * scale, img.height * scale);
-                
+                previewCtx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
                 dropZone.hidden = true;
                 previewContainer.hidden = false;
             };
@@ -150,10 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
             previewCtx.save();
-            
-            // Center the image during pull animation
-            const centerX = (previewCanvas.width - currentImage.width) / 2;
-            previewCtx.translate(centerX, progress * (-previewCanvas.height));
+            previewCtx.translate(0, progress * (-previewCanvas.height));
             previewCtx.drawImage(currentImage, 0, 0, previewCanvas.width, previewCanvas.height);
             previewCtx.restore();
             
@@ -166,29 +159,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function startShredding() {
             const stripImages = [];
-            const centerX = (shreddingCanvas.width - currentImage.width) / 2;
-            
             for (let i = 0; i < strips; i++) {
                 const stripCanvas = document.createElement('canvas');
                 stripCanvas.width = stripWidth;
                 stripCanvas.height = previewCanvas.height;
                 const stripCtx = stripCanvas.getContext('2d');
                 
-                // Calculate strip position relative to center
-                const sourceX = (i * currentImage.width) / strips;
                 stripCtx.drawImage(
                     currentImage,
-                    sourceX, 0, currentImage.width / strips, currentImage.height,
+                    (i * currentImage.width) / strips, 0, currentImage.width / strips, currentImage.height,
                     0, 0, stripWidth, previewCanvas.height
                 );
                 
                 stripImages.push({
                     canvas: stripCanvas,
-                    x: centerX + i * stripWidth,
+                    x: i * stripWidth,
                     y: -previewCanvas.height, // Start from above the shredder
                     speed: 2 + Math.random() * 3,
-                    rotation: (Math.random() - 0.5) * 0.2,
-                    rotationSpeed: (Math.random() - 0.5) * 0.02
+                    rotation: (Math.random() - 0.5) * 0.2
                 });
             }
             
@@ -203,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (strip.y < shreddingCanvas.height + 50) {
                         strip.y += strip.speed;
                         strip.speed += 0.2;
-                        strip.rotation += strip.rotationSpeed;
+                        strip.rotation += (Math.random() - 0.5) * 0.1;
                         
                         shreddingCtx.save();
                         shreddingCtx.translate(strip.x + stripWidth / 2, strip.y + previewCanvas.height / 2);
@@ -222,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (stillAnimating) {
                     requestAnimationFrame(animate);
                 } else {
+                    // Trigger confetti when shredding is complete
                     triggerConfetti();
                 }
             }
