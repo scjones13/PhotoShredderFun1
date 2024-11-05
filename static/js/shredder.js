@@ -2,10 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const previewCanvas = document.getElementById('previewCanvas');
+    const shreddingCanvas = document.getElementById('shreddingCanvas');
     const previewContainer = document.querySelector('.preview-container');
     const shredButton = document.getElementById('shredButton');
     const resetButton = document.getElementById('resetButton');
-    const ctx = previewCanvas.getContext('2d');
+    
+    const previewCtx = previewCanvas.getContext('2d');
+    const shreddingCtx = shreddingCanvas.getContext('2d');
     
     let currentImage = null;
 
@@ -46,9 +49,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const img = new Image();
             img.onload = () => {
                 currentImage = img;
-                previewCanvas.width = img.width;
-                previewCanvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
+                const maxWidth = 600;
+                const scale = Math.min(1, maxWidth / img.width);
+                
+                previewCanvas.width = img.width * scale;
+                previewCanvas.height = img.height * scale;
+                shreddingCanvas.width = previewCanvas.width;
+                shreddingCanvas.height = previewCanvas.height;
+                
+                previewCtx.drawImage(img, 0, 0, previewCanvas.width, previewCanvas.height);
                 dropZone.hidden = true;
                 previewContainer.hidden = false;
             };
@@ -57,66 +66,100 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsDataURL(file);
     }
 
-    shredButton.addEventListener('click', () => {
+    shredButton.addEventListener('click', async () => {
         if (!currentImage) return;
         
         const strips = 20;
         const stripWidth = previewCanvas.width / strips;
-        const imageData = ctx.getImageData(0, 0, previewCanvas.width, previewCanvas.height);
+        const shredderHeight = 200; // Height of the shredder graphic
         
-        // Create strips
-        const stripImages = [];
-        for (let i = 0; i < strips; i++) {
-            const stripCanvas = document.createElement('canvas');
-            stripCanvas.width = stripWidth;
-            stripCanvas.height = previewCanvas.height;
-            const stripCtx = stripCanvas.getContext('2d');
+        // Pull animation
+        const pullDuration = 1000; // 1 second
+        const startTime = performance.now();
+        
+        function pullAnimation(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / pullDuration, 1);
             
-            // Copy strip from original image
-            stripCtx.drawImage(
-                previewCanvas,
-                i * stripWidth, 0, stripWidth, previewCanvas.height,
-                0, 0, stripWidth, previewCanvas.height
-            );
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            previewCtx.save();
+            previewCtx.translate(0, progress * (-previewCanvas.height));
+            previewCtx.drawImage(currentImage, 0, 0, previewCanvas.width, previewCanvas.height);
+            previewCtx.restore();
             
-            stripImages.push({
-                canvas: stripCanvas,
-                x: i * stripWidth,
-                y: 0,
-                speed: 5 + Math.random() * 10
-            });
-        }
-
-        // Clear original canvas
-        ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-
-        // Animate strips
-        function animate() {
-            ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-            
-            let stillAnimating = false;
-            
-            stripImages.forEach(strip => {
-                if (strip.y < previewCanvas.height + 50) {
-                    strip.y += strip.speed;
-                    strip.speed += 0.2;
-                    ctx.drawImage(strip.canvas, strip.x, strip.y);
-                    stillAnimating = true;
-                }
-            });
-
-            if (stillAnimating) {
-                requestAnimationFrame(animate);
+            if (progress < 1) {
+                requestAnimationFrame(pullAnimation);
+            } else {
+                startShredding();
             }
         }
-
-        animate();
+        
+        function startShredding() {
+            const stripImages = [];
+            for (let i = 0; i < strips; i++) {
+                const stripCanvas = document.createElement('canvas');
+                stripCanvas.width = stripWidth;
+                stripCanvas.height = previewCanvas.height;
+                const stripCtx = stripCanvas.getContext('2d');
+                
+                stripCtx.drawImage(
+                    currentImage,
+                    (i * currentImage.width) / strips, 0, currentImage.width / strips, currentImage.height,
+                    0, 0, stripWidth, previewCanvas.height
+                );
+                
+                stripImages.push({
+                    canvas: stripCanvas,
+                    x: i * stripWidth,
+                    y: -previewCanvas.height, // Start from above the shredder
+                    speed: 2 + Math.random() * 3,
+                    rotation: (Math.random() - 0.5) * 0.2
+                });
+            }
+            
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            
+            function animate() {
+                shreddingCtx.clearRect(0, 0, shreddingCanvas.width, shreddingCanvas.height);
+                
+                let stillAnimating = false;
+                
+                stripImages.forEach(strip => {
+                    if (strip.y < shreddingCanvas.height + 50) {
+                        strip.y += strip.speed;
+                        strip.speed += 0.2;
+                        strip.rotation += (Math.random() - 0.5) * 0.1;
+                        
+                        shreddingCtx.save();
+                        shreddingCtx.translate(strip.x + stripWidth / 2, strip.y + previewCanvas.height / 2);
+                        shreddingCtx.rotate(strip.rotation);
+                        shreddingCtx.drawImage(
+                            strip.canvas,
+                            -stripWidth / 2,
+                            -previewCanvas.height / 2
+                        );
+                        shreddingCtx.restore();
+                        
+                        stillAnimating = true;
+                    }
+                });
+                
+                if (stillAnimating) {
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            animate();
+        }
+        
+        requestAnimationFrame(pullAnimation);
     });
 
     resetButton.addEventListener('click', () => {
         dropZone.hidden = false;
         previewContainer.hidden = true;
         currentImage = null;
-        ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        shreddingCtx.clearRect(0, 0, shreddingCanvas.width, shreddingCanvas.height);
     });
 });

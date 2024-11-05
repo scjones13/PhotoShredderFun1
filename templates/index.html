@@ -19,7 +19,14 @@
         </div>
 
         <div class="preview-container" hidden>
-            <canvas id="previewCanvas"></canvas>
+            <div class="shredder-machine">
+                <img src="{{ url_for('static', filename='images/shredder.svg') }}" alt="Shredder" class="large-shredder">
+                <div class="shredder-slot"></div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="previewCanvas"></canvas>
+                <canvas id="shreddingCanvas"></canvas>
+            </div>
             <div class="button-container">
                 <button id="shredButton" class="shred-button">SHRED IT! 🔪</button>
                 <button id="resetButton" class="reset-button">Upload New Image</button>
