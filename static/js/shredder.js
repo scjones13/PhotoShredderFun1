@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewCanvas = document.getElementById('previewCanvas');
     const shreddingCanvas = document.getElementById('shreddingCanvas');
     const previewContainer = document.querySelector('.preview-container');
+    const buttonContainer = document.querySelector('.button-container');
     const shredButton = document.getElementById('shredButton');
     const resetButton = document.getElementById('resetButton');
     const shareButton = document.getElementById('shareButton');
@@ -98,6 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 dropZone.hidden = true;
                 previewContainer.hidden = false;
+                
+                // Show the buttons after image upload
+                buttonContainer.style.display = 'flex';
+                if (shareButton) shareButton.style.display = 'block';
             };
             img.src = e.target.result;
         };
@@ -238,5 +243,9 @@ document.addEventListener('DOMContentLoaded', function() {
         currentImage = null;
         previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         shreddingCtx.clearRect(0, 0, shreddingCanvas.width, shreddingCanvas.height);
+        
+        // Hide the buttons when resetting
+        buttonContainer.style.display = 'none';
+        if (shareButton) shareButton.style.display = 'none';
     });
 });

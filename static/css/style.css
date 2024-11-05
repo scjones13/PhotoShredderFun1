@@ -98,6 +98,8 @@ h1 {
     align-items: center;
     width: 100%;
     max-width: 600px;
+    height: auto;
+    min-height: 300px;
 }
 
 #previewCanvas, #shreddingCanvas {
@@ -115,7 +117,7 @@ h1 {
 
 .button-container {
     margin-top: 1rem;
-    display: flex;
+    display: none;  /* Initially hidden */
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
@@ -132,6 +134,7 @@ h1 {
 }
 
 .share-button {
+    display: none;  /* Initially hidden */
     background-color: #3498db;
     color: white;
     padding: 0.8rem 1.5rem;
